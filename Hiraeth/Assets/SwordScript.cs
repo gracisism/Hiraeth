@@ -17,4 +17,9 @@ public class SwordScript : MonoBehaviour
     {
         transform.rotation = Quaternion.Euler(maxRotation * Mathf.Sin(Time.time * speed), 0f, 0f);
     }
+    void OnTriggerEnter(Collider other){
+        if(other.CompareTag("Player")){
+            Destroy(other);
+        }
+    }
 }
