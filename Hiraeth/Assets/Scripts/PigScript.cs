@@ -7,14 +7,14 @@ public class PigScript : MonoBehaviour
     private Animation anim;
     public float speed = 1.0f;
     public Transform target;
-    private Transform pointA;
-    private Transform pointB;
+    public float range = 5f;
+    public Transform player;
+    private bool chasingPlayer = false;
+    
     // Start is called before the first frame update
     void Start()
     {
         anim = this.gameObject.GetComponent<Animation>();
-        //pointA = this.transform.position;
-        //pointB = target.transform.position;
         
     }
 
@@ -22,23 +22,46 @@ public class PigScript : MonoBehaviour
     void Update()
     {
         float step = speed * Time.deltaTime;
-        this.transform.position = Vector3.MoveTowards(transform.position, target.position, step);
-        anim.Play("Walk01");
-        
+        float distance = Vector3.Distance(player.position, transform.position);
+        print(distance);
 
-        //Check if pig has reached target position 
-        if(Vector3.Distance(transform.position, target.position) < 0.001f){
-            transform.localRotation *= Quaternion.Euler(0, 180, 0);
+        if (!chasingPlayer){
+            //Pig walks up and down 
+            this.transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+            anim.Play("Walk01");
 
-            //print(target.transform.position.x);
-            
-            
-            if(target.transform.position.x == 100){
-                target.transform.position = new Vector3(134, target.transform.position.y, target.transform.position.z);
-            }
-            else{
-                target.transform.position = new Vector3(100, target.transform.position.y, target.transform.position.z);
+            //Check if pig has reached target position 
+            if(Vector3.Distance(transform.position, target.position) < 0.001f){
+                transform.localRotation *= Quaternion.Euler(0, 180, 0);
+                
+                if(target.transform.position.x == 100){
+                    target.transform.position = new Vector3(134, target.transform.position.y, target.transform.position.z);
+                }
+                else{
+                    target.transform.position = new Vector3(100, target.transform.position.y, target.transform.position.z);
+                }
             }
         }
+        else{
+            //Check if player is within enemy distance 
+            if(distance <= range){
+                chasingPlayer = true;
+                transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+            }
+            else{
+                chasingPlayer = false;
+            }
+        }
+        //     n   n
+        //   ((.)_(.))
+        //   <(     )>
+        //     v   v
+        //    -------
+        
+
+    
+        
+        
+        
     }
 }
